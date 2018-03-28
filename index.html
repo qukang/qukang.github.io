@@ -446,8 +446,7 @@ use think\Facade;
 Facade::bind(&apos;app\facade\Test&apos;, &apos;app\common\Test&apos;);
 echo Test::hello(&apos;thinkphp&apos;);
 </code></pre><p>官方手册中还告诉我们系统给内置的常用类库定义了Facade类库，包括：APP、Build、Cache等。因此，我们在使用的时候并不需要进行自己手动绑定。</p>
-<p>##TP5.1中的Facade实现方式</p>
-<p>上面我们知道了如何使用Facade，但是TP5.1中对于Facade是如何实现的，下面进行简单的探究。<br>首先，对于从目录中找到了官方对于常用类库的Facade实现类：<br><img src="http://p6awscdo8.bkt.clouddn.com/pictures/180328/GhDCkC85FF.png?imageslim"><br>打开任何一个facade目录中的静态代理类进行源码的查阅，都会发现这样一个事实：<br>所有的类的内容都是空，也就是说官方都是通过手动绑定的。比如：</p>
+<h2 id="TP5-1中的Facade实现方式"><a href="#TP5-1中的Facade实现方式" class="headerlink" title="TP5.1中的Facade实现方式"></a>TP5.1中的Facade实现方式</h2><p>上面我们知道了如何使用Facade，但是TP5.1中对于Facade是如何实现的，下面进行简单的探究。<br>首先，对于从目录中找到了官方对于常用类库的Facade实现类：<br><img src="http://p6awscdo8.bkt.clouddn.com/pictures/180328/GhDCkC85FF.png?imageslim"><br>打开任何一个facade目录中的静态代理类进行源码的查阅，都会发现这样一个事实：<br>所有的类的内容都是空，也就是说官方都是通过手动绑定的。比如：</p>
 <pre><code>namespace think\facade;
 
 use think\Facade;
@@ -759,6 +758,21 @@ user-&gt;getName();
 
               
 
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
               
             </nav>
           

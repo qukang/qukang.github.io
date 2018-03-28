@@ -100,6 +100,7 @@
 
 
   <meta name="description" content="最近几天在看ThinkPHP5.1（后面ThinkPHP简称tp）的一些东西，由于之前的几个项目主要是再用tp3在做，对于tp5没有了解过，昨天大概看了下tp5和tp3存在不少差异，感觉会更加友好，而且引入了很多新的特性，比如容器、Facade、依赖注入等等。出于好奇，对于Facade的原理和使用进行一些简单的探索。我们对于官方手册进行查阅后发现官方对于Facade的翻译为“门面”，其中对于Fac">
+<meta name="keywords" content="PHP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浅谈thinkphp5.1的Facade原理与实现">
 <meta property="og:url" content="http://yoursite.com/2018/03/28/浅谈thinkphp5-1的Facade原理与实现/index.html">
@@ -108,7 +109,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://p6awscdo8.bkt.clouddn.com/pictures/180328/Hf6ah3mlCE.png?imageslim">
 <meta property="og:image" content="http://p6awscdo8.bkt.clouddn.com/pictures/180328/GhDCkC85FF.png?imageslim">
-<meta property="og:updated_time" content="2018-03-28T14:30:29.486Z">
+<meta property="og:updated_time" content="2018-03-28T14:51:47.601Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈thinkphp5.1的Facade原理与实现">
 <meta name="twitter:description" content="最近几天在看ThinkPHP5.1（后面ThinkPHP简称tp）的一些东西，由于之前的几个项目主要是再用tp3在做，对于tp5没有了解过，昨天大概看了下tp5和tp3存在不少差异，感觉会更加友好，而且引入了很多新的特性，比如容器、Facade、依赖注入等等。出于好奇，对于Facade的原理和使用进行一些简单的探索。我们对于官方手册进行查阅后发现官方对于Facade的翻译为“门面”，其中对于Fac">
@@ -445,8 +446,7 @@ use think\Facade;
 Facade::bind(&apos;app\facade\Test&apos;, &apos;app\common\Test&apos;);
 echo Test::hello(&apos;thinkphp&apos;);
 </code></pre><p>官方手册中还告诉我们系统给内置的常用类库定义了Facade类库，包括：APP、Build、Cache等。因此，我们在使用的时候并不需要进行自己手动绑定。</p>
-<p>##TP5.1中的Facade实现方式</p>
-<p>上面我们知道了如何使用Facade，但是TP5.1中对于Facade是如何实现的，下面进行简单的探究。<br>首先，对于从目录中找到了官方对于常用类库的Facade实现类：<br><img src="http://p6awscdo8.bkt.clouddn.com/pictures/180328/GhDCkC85FF.png?imageslim"><br>打开任何一个facade目录中的静态代理类进行源码的查阅，都会发现这样一个事实：<br>所有的类的内容都是空，也就是说官方都是通过手动绑定的。比如：</p>
+<h2 id="TP5-1中的Facade实现方式"><a href="#TP5-1中的Facade实现方式" class="headerlink" title="TP5.1中的Facade实现方式"></a>TP5.1中的Facade实现方式</h2><p>上面我们知道了如何使用Facade，但是TP5.1中对于Facade是如何实现的，下面进行简单的探究。<br>首先，对于从目录中找到了官方对于常用类库的Facade实现类：<br><img src="http://p6awscdo8.bkt.clouddn.com/pictures/180328/GhDCkC85FF.png?imageslim"><br>打开任何一个facade目录中的静态代理类进行源码的查阅，都会发现这样一个事实：<br>所有的类的内容都是空，也就是说官方都是通过手动绑定的。比如：</p>
 <pre><code>namespace think\facade;
 
 use think\Facade;
@@ -563,6 +563,12 @@ user-&gt;getName();
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/PHP/" rel="tag"># PHP</a>
+          
+        </div>
+      
 
       
       
@@ -663,6 +669,21 @@ user-&gt;getName();
               
 
               
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
             </nav>
           
 
@@ -694,7 +715,7 @@ user-&gt;getName();
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Facade设计模式"><span class="nav-number">1.</span> <span class="nav-text">Facade设计模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TP5-1中的Facade使用"><span class="nav-number">2.</span> <span class="nav-text">TP5.1中的Facade使用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Facade设计模式"><span class="nav-number">1.</span> <span class="nav-text">Facade设计模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TP5-1中的Facade使用"><span class="nav-number">2.</span> <span class="nav-text">TP5.1中的Facade使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TP5-1中的Facade实现方式"><span class="nav-number">3.</span> <span class="nav-text">TP5.1中的Facade实现方式</span></a></li></ol></div>
             
 
           </div>
