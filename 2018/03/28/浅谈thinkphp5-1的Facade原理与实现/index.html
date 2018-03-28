@@ -99,16 +99,16 @@
 
 
 
-  <meta name="description" content="记录学习与生活">
+  <meta name="description" content="最近几天在看ThinkPHP5.1（后面ThinkPHP简称tp）的一些东西，由于之前的几个项目主要是再用tp3在做，对于tp5没有了解过，昨天大概看了下tp5和tp3存在不少差异，感觉会更加友好，而且引入了很多新的特性，比如容器、Facade、依赖注入等等。出于好奇，对于Facade的原理和使用进行一些简单的探索。我们对于官方手册进行查阅后发现官方对于Facade的翻译为“门面”，其中对于Fac">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浅谈thinkphp5.1的Facade原理与实现">
 <meta property="og:url" content="http://yoursite.com/2018/03/28/浅谈thinkphp5-1的Facade原理与实现/index.html">
 <meta property="og:site_name" content="qukang&#39;s Blog">
-<meta property="og:description" content="记录学习与生活">
-<meta property="og:updated_time" content="2018-03-28T07:34:10.370Z">
+<meta property="og:description" content="最近几天在看ThinkPHP5.1（后面ThinkPHP简称tp）的一些东西，由于之前的几个项目主要是再用tp3在做，对于tp5没有了解过，昨天大概看了下tp5和tp3存在不少差异，感觉会更加友好，而且引入了很多新的特性，比如容器、Facade、依赖注入等等。出于好奇，对于Facade的原理和使用进行一些简单的探索。我们对于官方手册进行查阅后发现官方对于Facade的翻译为“门面”，其中对于Fac">
+<meta property="og:updated_time" content="2018-03-28T08:55:18.729Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈thinkphp5.1的Facade原理与实现">
-<meta name="twitter:description" content="记录学习与生活">
+<meta name="twitter:description" content="最近几天在看ThinkPHP5.1（后面ThinkPHP简称tp）的一些东西，由于之前的几个项目主要是再用tp3在做，对于tp5没有了解过，昨天大概看了下tp5和tp3存在不少差异，感觉会更加友好，而且引入了很多新的特性，比如容器、Facade、依赖注入等等。出于好奇，对于Facade的原理和使用进行一些简单的探索。我们对于官方手册进行查阅后发现官方对于Facade的翻译为“门面”，其中对于Fac">
 
 
 
@@ -340,7 +340,88 @@
       
 
       
-        
+        <p>最近几天在看ThinkPHP5.1（后面ThinkPHP简称tp）的一些东西，由于之前的几个项目主要是再用tp3在做，对于tp5没有了解过，昨天大概看了下tp5和tp3存在不少差异，感觉会更加友好，而且引入了很多新的特性，比如容器、Facade、依赖注入等等。<br>出于好奇，对于Facade的原理和使用进行一些简单的探索。<br>我们对于官方手册进行查阅后发现官方对于Facade的翻译为“门面”，其中对于Facade的说明还是很清晰的：</p>
+<blockquote>
+<p>门面为容器中的类提供了一个静态调用接口，相比于传统的静态方法调用， 带来了更好的可测试性和扩展性，你可以为任何的非静态类库定义一个facade类。<br>系统已经为大部分核心类库定义了Facade，所以你可以通过Facade来访问这些系统类，当然也可以为你的应用类库添加静态代理。</p>
+</blockquote>
+<p>这段话的意思其实很清晰，所谓的Facade是tp5.1为开发者提供的一套机制，开发者可以利用该机制为应用类添加静态代理，并且通过这些静态代理类实现静态调用类中的动态方法。为了理解，对于Facade设计模式，我们需要进行简单的介绍。</p>
+<h2 id="Facade设计模式"><a href="#Facade设计模式" class="headerlink" title="Facade设计模式"></a>Facade设计模式</h2><p>Facade设计模式，又被成为外观设计模式或者门脸设计模式。我们考虑一种情况，在某个场景下，我们需要对于很多类的对象进行一系列复杂的操作，比如说，当我们自己在家做午饭时，需要首先买菜，然后洗菜，然后烧饭，然后摆放碗筷，再吃饭，收拾碗筷，洗碗。如果能够将一系列的操作都简化成为一个统一的接口就叫作午餐流程。上面的流程过于繁琐，我们简单用A，B代表需要子系统的类，Facade类用于封装统一的接口提供给Client类进行调用。<br>代码如下：</p>
+<pre><code>class ClassA
+{
+    public function funcA1(){
+        dump(&quot;This is &quot;.__METHOD__);
+    }
+    public function funcA2(){
+        dump(&quot;This is &quot;.__METHOD__);
+    }
+}
+
+class ClassB
+{
+    public function funcB1(){
+        dump(&quot;This is &quot;.__METHOD__);
+    }
+    public function funcB2(){
+        dump(&quot;This is &quot;.__METHOD__);
+    }
+}
+
+
+class Facade
+{
+    public function DoIt(){
+        $a = new ClassA();
+        $b = new ClassB();
+        $a-&gt;funcA1();
+        $b-&gt;funcB1();
+        $a-&gt;funcA2();
+        $b-&gt;funcB2();
+    }
+}
+
+class Client
+{
+    public function test(){
+        $facade = new Facade;
+        $facade-&gt;DoIt();
+    }
+}
+</code></pre><p>可以看到，Client通过调用Facade类的DoIt方法实现了对于ClassA和ClassB的一系列操作。我们不需要关注其中的细节就可以完成一个完整的流程，只需要使用一个简单的函数，因此，Facade之所以被命名为Facade也就是因为它可以将一个类或者多个类的繁琐的细节以及关联都隐藏起来，只给调用者一个干净简单的外观。<br>我们最后来给出Facade设计模式的正式定义：</p>
+<blockquote>
+<p>外观模式提供了一个统一的接口，用来访问子系统中的一群接口。外观定义了一个高层接口，让子系统更容易使用</p>
+</blockquote>
+<h2 id="TP5-1中的Facade使用"><a href="#TP5-1中的Facade使用" class="headerlink" title="TP5.1中的Facade使用"></a>TP5.1中的Facade使用</h2><p>TP5.1的Facade设计模式和前面的简单示例有很大的不同，使用了静态代理等技术，但是它们的思想是一致的，就是给调用者尽可能简洁的的借口。<br>如果要对我们自定义的某个应用类使用Facade，那么我们需要做的事情很简单，假设我们的自定义类为Test类，里面有一个hello方法，那么</p>
+<pre><code>&lt;?php
+namespace app\common;
+
+class Test
+{
+    public function hello($name)
+    {
+        return &apos;hello,&apos; . $name;
+    }
+}
+</code></pre><p>一般来说，如果调用这个类的hello方法，我们需要首先实例化一个对象，然后通过对象进行方法调用：</p>
+<pre><code>$test = new \app\common\Test;
+
+echo $test-&gt;hello(&apos;thinkphp&apos;);
+</code></pre><p>如果要用Facade静态代理，我们需要首先定义一个类：</p>
+<pre><code>&lt;?php
+namespace app\facade;
+
+use think\Facade;
+
+class Test extends Facade
+{
+    protected static function getFacadeClass()
+    {
+        return &apos;app\common\Test&apos;;
+    }
+}
+</code></pre><p>这个类需要继承think\Facade，在定义之后我们就可以使用静态方式去调用第一个类的动态方法，如下：</p>
+<pre><code>echo \app\facade\Test::hello(&apos;thinkphp&apos;);
+</code></pre><p>也就是说，TP5.1中的Facade主要是为了让使用者在不进行类实例化的情况下对于方法直接静态调用。</p>
+
       
     </div>
 
@@ -424,8 +505,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -470,6 +560,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Facade设计模式"><span class="nav-number">1.</span> <span class="nav-text">Facade设计模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TP5-1中的Facade使用"><span class="nav-number">2.</span> <span class="nav-text">TP5.1中的Facade使用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
