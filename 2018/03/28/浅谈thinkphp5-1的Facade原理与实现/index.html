@@ -107,7 +107,7 @@
 <meta property="og:description" content="最近几天在看ThinkPHP5.1（后面ThinkPHP简称tp）的一些东西，由于之前的几个项目主要是再用tp3在做，对于tp5没有了解过，昨天大概看了下tp5和tp3存在不少差异，感觉会更加友好，而且引入了很多新的特性，比如容器、Facade、依赖注入等等。出于好奇，对于Facade的原理和使用进行一些简单的探索。我们对于官方手册进行查阅后发现官方对于Facade的翻译为“门面”，其中对于Fac">
 <meta property="og:image" content="http://p6awscdo8.bkt.clouddn.com/pictures/180328/Hf6ah3mlCE.png?imageslim">
 <meta property="og:image" content="http://p6awscdo8.bkt.clouddn.com/pictures/180328/GhDCkC85FF.png?imageslim">
-<meta property="og:updated_time" content="2018-03-28T14:27:52.943Z">
+<meta property="og:updated_time" content="2018-03-28T14:30:29.486Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈thinkphp5.1的Facade原理与实现">
 <meta name="twitter:description" content="最近几天在看ThinkPHP5.1（后面ThinkPHP简称tp）的一些东西，由于之前的几个项目主要是再用tp3在做，对于tp5没有了解过，昨天大概看了下tp5和tp3存在不少差异，感觉会更加友好，而且引入了很多新的特性，比如容器、Facade、依赖注入等等。出于好奇，对于Facade的原理和使用进行一些简单的探索。我们对于官方手册进行查阅后发现官方对于Facade的翻译为“门面”，其中对于Fac">
@@ -523,8 +523,11 @@ user-&gt;getName();
 <p>这个方法的主要的作用在于，当在静态上下文中调用一个不可访问方法时，__callStatic() 会被调用。</p>
 <p>那么，Facade类重写了这个魔术方法，所以，当我们调用了一个静态代理类中事实上并不存在的静态方法时，将会执行这个函数，也就是说本质上执行用户自定义函数：call_user_func_array([实例, 方法],参数)，为了获得被代理类的实例，Facade又定义了一个获取对象的方法：<br>自定义静态方法createFacade()，这是一个专门获取代理类示例的方法，这个方法同样位于Facade类中：</p>
 <pre><code>protected static function createFacade($class = &apos;&apos;, $args = [], $newInstance = false)
-</code></pre><p>{<br>        $class       = $class ?: static::class;<br>        $facadeClass = static::getFacadeClass();</p>
-<pre><code>    if ($facadeClass) {
+{
+    $class       = $class ?: static::class;
+    $facadeClass = static::getFacadeClass();
+
+    if ($facadeClass) {
         $class = $facadeClass;
     } elseif (isset(self::$bind[$class])) {
         $class = self::$bind[$class];

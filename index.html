@@ -524,8 +524,11 @@ user-&gt;getName();
 <p>这个方法的主要的作用在于，当在静态上下文中调用一个不可访问方法时，__callStatic() 会被调用。</p>
 <p>那么，Facade类重写了这个魔术方法，所以，当我们调用了一个静态代理类中事实上并不存在的静态方法时，将会执行这个函数，也就是说本质上执行用户自定义函数：call_user_func_array([实例, 方法],参数)，为了获得被代理类的实例，Facade又定义了一个获取对象的方法：<br>自定义静态方法createFacade()，这是一个专门获取代理类示例的方法，这个方法同样位于Facade类中：</p>
 <pre><code>protected static function createFacade($class = &apos;&apos;, $args = [], $newInstance = false)
-</code></pre><p>{<br>        $class       = $class ?: static::class;<br>        $facadeClass = static::getFacadeClass();</p>
-<pre><code>    if ($facadeClass) {
+{
+    $class       = $class ?: static::class;
+    $facadeClass = static::getFacadeClass();
+
+    if ($facadeClass) {
         $class = $facadeClass;
     } elseif (isset(self::$bind[$class])) {
         $class = self::$bind[$class];
