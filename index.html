@@ -245,6 +245,22 @@
   
     
 
+    
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+    
+
+  
+
+
   
 
   
@@ -356,7 +372,10 @@
           
             <p>最近几天在看ThinkPHP5.1（后面ThinkPHP简称tp）的一些东西，由于之前的几个项目主要是再用tp3在做，对于tp5没有了解过，昨天大概看了下tp5和tp3存在不少差异，感觉会更加友好，而且引入了很多新的特性，比如容器、Facade、依赖注入等等。<br>出于好奇，对于Facade的原理和使用进行一些简单的探索。<br>我们对于官方手册进行查阅后发现官方对于Facade的翻译为“门面”，其中对于Facade的说明还是很清晰的：</p>
 <blockquote>
-<p>门面为容器中的类提供了一个静态调用接口，相比于传统的静态方法调用， 带来了更好的可测试性和扩展性，你可以为任何的非静态类库定义一个facade类。<br>系统已经为大部分核心类库定义了Facade，所以你可以通过Facade来访问这些系统类，当然也可以为你的应用类库添加静态代理。</p>
+<p>门面为容器中的类提供了一个静态调用接口，相比于传统的静态方法调用， 带来了更好的可测试性和扩展性，你可以为任何的非静态类库定义一个facade类。</p>
+</blockquote>
+<blockquote>
+<p>系统已经为大部分核心类库定义了Facade，所以你可以通过Facade来访问这些系统类，当然也可以为你的应用类库添加静态代理。</p>
 </blockquote>
 <p>这段话的意思其实很清晰，所谓的Facade是tp5.1为开发者提供的一套机制，开发者可以利用该机制为应用类添加静态代理，并且通过这些静态代理类实现静态调用类中的动态方法。为了理解，对于Facade设计模式，我们需要进行简单的介绍。</p>
 <h2 id="Facade设计模式"><a href="#Facade设计模式" class="headerlink" title="Facade设计模式"></a>Facade设计模式</h2><p>Facade设计模式，又被成为外观设计模式或者门脸设计模式。我们考虑一种情况，在某个场景下，我们需要对于很多类的对象进行一系列复杂的操作，比如说，当我们自己在家做午饭时，需要首先买菜，然后洗菜，然后烧饭，然后摆放碗筷，再吃饭，收拾碗筷，洗碗。如果能够将一系列的操作都简化成为一个统一的接口就叫作午餐流程。上面的流程过于繁琐，我们简单用A，B代表需要子系统的类，Facade类用于封装统一的接口提供给Client类进行调用。<br><img src="http://p6awscdo8.bkt.clouddn.com/pictures/180328/Hf6ah3mlCE.png?imageslim" alt="mark"><br>代码如下：</p>
@@ -771,7 +790,7 @@ user-&gt;getName();
                 
                 
                 <div class="site-state-item site-state-tags">
-                  
+                  <a href="/tags/index.html">
                     
                     
                       
@@ -780,7 +799,7 @@ user-&gt;getName();
                     
                     <span class="site-state-item-count">2</span>
                     <span class="site-state-item-name">标签</span>
-                  
+                  </a>
                 </div>
               
             </nav>
